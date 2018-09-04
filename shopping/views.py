@@ -9,7 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from dss.Serializer import serializer
 
-from account.annotation import my_login_required, get, response_failure
+from account.annotation import my_login_required, get, response_failure, post, response_success
 from models import *
 
 import sys
@@ -33,15 +33,15 @@ def getType(request):
 @get
 def getProductItem(request):
     if request.GET.has_key('productType'):
-        items = productItem.objects.filter(productType=request.GET['productType']).values('id', 'productName', 'productImage', 'price')
-        data = serializer(items, datetime_format="string", foreign=False)
+        items = productItem.objects.filter(productType=request.GET['productType'])
+        data = serializer(items, datetime_format="string", include_attr=['id', 'productName', 'productImage', 'price'],  foreign=False)
         json_string = json.dumps(data, ensure_ascii=False)
     else:
         types = productType.objects.all().order_by('sortIndex')
         strTemp = {}
         for dType in types:
-            items = productItem.objects.filter(productType=dType.id).values('id', 'productName', 'productImage', 'price')
-            data = serializer(items, datetime_format="string", foreign=False)
+            items = productItem.objects.filter(productType=dType.id)
+            data = serializer(items, datetime_format="string", include_attr=['id', 'productName', 'productImage', 'price'], foreign=False)
             key = 'key_' + str(dType.id)
             strTemp[key] = data
         json_string = json.dumps(strTemp, ensure_ascii=False)
@@ -53,7 +53,7 @@ def getProductItem(request):
 @get
 def getProductItemDetail(request):
     if request.GET.has_key('productItemId'):
-        items = productItem.objects.filter(id=request.GET['productItemId'])
+        items = productItem.objects.get(id=request.GET['productItemId'])
         data = serializer(items, datetime_format="string", foreign=False)
         json_string = json.dumps(data, ensure_ascii=False)
         return HttpResponse(json_string, content_type='application/json; charset=utf-8')
@@ -78,3 +78,34 @@ def getDefaultAddress(request):
     json_string = json.dumps(data, ensure_ascii=False)
     return HttpResponse(json_string, content_type='application/json; charset=utf-8')
 
+
+# @my_login_required
+@get
+def getShoppingCart(request):
+    relas = shoppingCartRela.objects.filter(user=myUser.objects.get(id=1))
+    data = serializer(relas, datetime_format="string", foreign=True,
+                      exclude_attr=['user', 'user_id', 'productType', 'imgWidth', 'imgHeight', 'productItem_id'])
+    json_string = json.dumps(data, ensure_ascii=False)
+    return HttpResponse(json_string, content_type='application/json; charset=utf-8')
+
+
+@my_login_required
+@post
+def addShoppingCart(request):
+    productItemId = request.POST['productItemId']
+    count = request.POST['count']
+    (rela, created) = shoppingCartRela.objects.get_or_create(user=request.jwt_user, productItem=productItemId)
+    rela.count += count
+    rela.save()
+    return response_success('加入购物车成功！')
+
+
+@my_login_required
+@post
+def makeOrder(request):
+    productItemId = request.POST['productItemId']
+    count = request.POST['count']
+    (rela, created) = shoppingCartRela.objects.get_or_create(user=request.jwt_user, productItem=productItemId)
+    rela.count += count
+    rela.save()
+    return response_success('加入购物车成功！')

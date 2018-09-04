@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.db import models
-
-# Create your models here.
 from account.models import myUser
 import sys
 
@@ -29,31 +26,27 @@ class productItem(models.Model):
     productImage = models.ImageField(upload_to="images", height_field='imgHeight', width_field='imgWidth')
     desc = models.TextField(null=True)
     isSpecialPrice = models.BooleanField(default=False)
-    newPrice = models.DecimalField(decimal_places=2, max_digits=10, blank=True)
+    newPrice = models.DecimalField(decimal_places=2, max_digits=10, default=None)
     productType = models.ForeignKey(productType)
 
     def __str__(self):
         return self.productName
 
 
-class shoppingCart(models.Model):
-    user = models.OneToOneField(myUser)
-
-    def __str__(self):
-        return self.user.nickName
-
-
 class shoppingCartRela(models.Model):
-    count = models.PositiveIntegerField()
-    cart = models.ForeignKey(shoppingCart)
+    count = models.PositiveIntegerField(default=0)
+    user = models.ForeignKey(myUser, blank=True, null=True)
     productItem = models.ForeignKey(productItem)
+
+    # def __str__(self):
+    #     return self.user.nickName + "购物车"
 
 
 class address(models.Model):
     name = models.CharField(max_length=16)
     phone = models.CharField(max_length=16)
     addrDetail = models.CharField(max_length=256)
-    user = models.ForeignKey(myUser)
+    user = models.ForeignKey(myUser, blank=True, null=True)
     isDefault = models.BooleanField(default=False)
 
     def __str__(self):
@@ -79,4 +72,4 @@ class orderFrom(models.Model):
     realDiscount = models.DecimalField(decimal_places=2, max_digits=10)
     orderDetail = models.TextField()
     address = models.ForeignKey(address)
-    user = models.ForeignKey(myUser)
+    user = models.ForeignKey(myUser, blank=True, null=True)

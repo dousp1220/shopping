@@ -19,8 +19,8 @@ class productItemAdmin(admin.ModelAdmin):
 
 
 class shoppingCartRelaAdmin(admin.ModelAdmin):
-    list_display = ('count', 'cart', 'productItem')
-    search_fields = ['productItem', 'cart']
+    list_display = ('count', 'productItem')
+    search_fields = ['productItem']
 
 
 class addressAdmin(admin.ModelAdmin):
@@ -35,7 +35,7 @@ class orderFromAdmin(admin.ModelAdmin):
 
 admin.site.register(productType, productTypeAdmin)
 admin.site.register(productItem, productItemAdmin)
-admin.site.register(shoppingCart)
+# admin.site.register(shoppingCart)
 admin.site.register(shoppingCartRela, shoppingCartRelaAdmin)
 admin.site.register(address, addressAdmin)
 admin.site.register(orderFrom, orderFromAdmin)
