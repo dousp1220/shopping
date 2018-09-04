@@ -54,7 +54,7 @@ class address(models.Model):
     phone = models.CharField(max_length=16)
     addrDetail = models.CharField(max_length=256)
     user = models.ForeignKey(myUser)
-    idDefault = models.BooleanField(default=False)
+    isDefault = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -72,6 +72,7 @@ class orderFrom(models.Model):
     )
     orderState = models.IntegerField(choices=orderState_list, verbose_name="订单状态")  # 以下拉框的形式在页面展示
     # orderState = models.IntegerField()
+    orderDateTime = models.DateTimeField(null=True)
     stateLog = models.TextField()
     discount = models.DecimalField(decimal_places=2, max_digits=10)
     remarks = models.TextField(null=True)

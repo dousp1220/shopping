@@ -49,7 +49,7 @@ def getProductItem(request):
     return HttpResponse(json_string, content_type='application/json; charset=utf-8')
 
 
-# @my_login_required
+@my_login_required
 @get
 def getProductItemDetail(request):
     if request.GET.has_key('productItemId'):
@@ -59,4 +59,22 @@ def getProductItemDetail(request):
         return HttpResponse(json_string, content_type='application/json; charset=utf-8')
     else:
         return response_failure("参数不匹配！")
+
+
+@my_login_required
+@get
+def getAddress(request):
+    addrs = address.objects.filter(user=request.jwt_user)
+    data = serializer(addrs, datetime_format="string", foreign=False)
+    json_string = json.dumps(data, ensure_ascii=False)
+    return HttpResponse(json_string, content_type='application/json; charset=utf-8')
+
+
+@my_login_required
+@get
+def getDefaultAddress(request):
+    addrs = address.objects.filter(user=request.jwt_user, idDefault=True)
+    data = serializer(addrs, datetime_format="string", foreign=False)
+    json_string = json.dumps(data, ensure_ascii=False)
+    return HttpResponse(json_string, content_type='application/json; charset=utf-8')
 

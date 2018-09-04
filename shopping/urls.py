@@ -6,5 +6,7 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^getType$', getType),
     url(r'getProductItem$', getProductItem),
-    url(r'getProductItemDetail$', getProductItemDetail)
+    url(r'getProductItemDetail$', getProductItemDetail),
+    url(r'^getAddress$', getAddress),
+    url(r'^getDefaultAddress$', getDefaultAddress)
 ]

@@ -59,7 +59,7 @@ JWT_AUTH = {
 
 ROOT_URLCONF = 'shop.urls'
 
-ALLOWED_HOSTS = ['www.test.com', 'localhost', "127.0.0.1"]
+ALLOWED_HOSTS = ['www.test.com', 'localhost', "127.0.0.1", 'e2322990.ngrok.io']
 
 TEMPLATES = [
     {
