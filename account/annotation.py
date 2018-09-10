@@ -7,6 +7,7 @@ import os
 
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+from dss.Serializer import serializer
 
 
 def my_user_passes_test(test_func):
@@ -69,21 +70,19 @@ def my_permission_required(perm, raise_exception=False):
     return my_user_passes_test(check_perms)
 
 
-def response_success(message, data=None, data_list=[]):
+def response_success(message, data=None):
     return HttpResponse(json.dumps({
         'code': 2000,  # code由前后端配合指定
         'message': message,  # 提示信息
         'data': data,  # 返回单个对象
-        'dataList': data_list  # 返回对象数组
     }, ensure_ascii=False), 'application/json; charset=utf-8')
 
 
-def response_failure(message, data=None, data_list=[]):
+def response_failure(message, data=None):
     return HttpResponse(json.dumps({
         'code': 4000,
         'message': message,
         'data': data,
-        'dataList': data_list
     }, ensure_ascii=False), 'application/json; charset=utf-8')
 
 
